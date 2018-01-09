@@ -6,7 +6,7 @@ import wifi
 def Search():
     wifilist = []
 
-    cells = wifi.Cell.all('wlan0')
+    cells = wifi.Cell.all('wlan1')
 
     for cell in cells:
         wifilist.append(cell)
@@ -25,7 +25,7 @@ def FindFromSearchList(ssid):
 
 
 def FindFromSavedList(ssid):
-    cell = wifi.Scheme.find('wlan0', ssid)
+    cell = wifi.Scheme.find('wlan1', ssid)
 
     if cell:
         return cell
@@ -35,8 +35,6 @@ def FindFromSavedList(ssid):
 
 def Connect(ssid, password=None):
     cell = FindFromSearchList(ssid)
-    print('ssidid : ' + ssid)
-    print('password : ' + password)
     if cell:
         savedcell = FindFromSavedList(cell.ssid)
 
@@ -51,6 +49,7 @@ def Connect(ssid, password=None):
 	    print('First time to connect')
             if cell.encrypted:
                 if password:
+		    print('Add scheme')
                     scheme = Add(cell, password)
 
                     try:
@@ -59,6 +58,7 @@ def Connect(ssid, password=None):
                     # Wrong Password
                     except wifi.exceptions.ConnectionError:
 			print('Wrong Password')
+			print(wifi.exceptions.ConnectionError)
                         Delete(ssid)
                         return False
 
@@ -83,7 +83,7 @@ def Add(cell, password=None):
     if not cell:
         return False
 
-    scheme = wifi.Scheme.for_cell('wlan0', cell.ssid, cell, password)
+    scheme = wifi.Scheme.for_cell('wlan1', cell.ssid, cell, password)
     scheme.save()
     return scheme
 
@@ -105,5 +105,6 @@ def Delete(ssid):
 if __name__ == '__main__':
     # Search WiFi and return WiFi list
     print Search()
-    Connect('U+village','lguplus100')
-#    Delete('superman');
+    Connect('superman','aaaaaaab')
+    #Connect('QWER')
+    #Delete('QWER');
